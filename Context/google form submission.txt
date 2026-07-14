@@ -1,0 +1,23 @@
+﻿LayerLogic: Project Master Document
+
+Team name: SteelSync
+IIT Kharagpur Platinum Jubilee Innovation Challenge
+Part 1: Stage 1 Google Form Submission 
+Section D - Track & Domain
+* Q22. Primary Track:
+Track A - Deep Tech for the World (Note: If the form allows selecting "Both", choose Both. If forced to choose one, Track A is the strongest fit for industrial AI).
+* Q23. Primary Technology Domain:
+Artificial Intelligence / Machine Learning
+* Q24. Secondary Technology Domain (optional):
+Advanced Manufacturing / Industry 4.0 / Software
+Section E - Broad Problem Area
+Q26. Problem Statement (Max 300 words)
+Metal Additive Manufacturing (3D Printing) is revolutionizing aerospace, biomedical, and automotive engineering by allowing the creation of complex, lightweight geometries. However, the process is plagued by a critical flaw: unpredictable micro-defects. During printing, thermal fluctuations and unstable melt pools often lead to internal porosity, lack-of-fusion, and structural warping. Currently, these defects are usually discovered only after the hours-long print is completed, utilizing expensive post-process X-ray CT scans. This reactive approach results in massive material waste, inflated energy consumption, and slow production cycles. There is a critical global need for an intelligent, purely software-based monitoring system capable of detecting these micro-defects in real-time during the printing process. Solving this allows operators to halt or auto-correct failing builds instantly, saving time, expensive metal powders, and energy.
+Q27. Working Title (Max 50 words)
+LayerLogic: Real-Time Defect Detection in Additive Manufacturing via Multimodal Deep Learning
+Q28. Proposed Innovation/Solution (Max 300 words)
+I propose LayerLogic, an end-to-end AI pipeline designed to act as the diagnostic brain for industrial metal 3D printers. Rather than relying on physical hardware modifications, this is a purely algorithmic solution that leverages multimodal sensor fusion.
+The software ingests two distinct data streams generated during the printing process: acoustic data (the high-frequency sound of the laser melting the powder) and optical data (images of the melt pool). The acoustic signals are mathematically converted into Mel-spectrograms, while deep learning feature extraction (utilizing Convolutional Neural Networks) is applied simultaneously to both the spectrograms and the visual imagery. The pipeline concatenates and fuses these multimodal features to predict the structural integrity of the layer currently being printed with high accuracy.
+To ensure real-world industrial applicability, the AI model will be packaged within a highly optimized edge-inference pipeline (e.g., using FastAPI ). This allows the algorithm to process streaming sensor data with near-zero latency. As a software solution, LayerLogic acts as a scalable API that can be integrated into existing commercial advanced manufacturing setups, drastically reducing the carbon footprint and material waste of Industry 4.0.
+Q29. Why is this Deep Tech, not surface-level? (Max 100 words)
+This project directly bridges complex manufacturing physics with advanced artificial intelligence. Processing non-stationary acoustic signals and high-speed melt-pool imagery requires sophisticated multimodal neural network architectures, far beyond simple classification algorithms. Fusing these disparate data types to predict complex thermodynamic anomalies (like keyhole porosity) requires extracting deeply hidden mathematical features from time-series data. Furthermore, engineering this as a deployable pipeline capable of real-time edge-inference addresses a fundamental algorithmic bottleneck in smart manufacturing. This represents rigorous, hard-tech research at the intersection of mechanical engineering and artificial intelligence.

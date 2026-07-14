@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LayerLogic -- Real-Time LPBF Defect Detection</title>
+    <meta name="description" content="Multimodal deep learning pipeline for detecting micro-defects in metal additive manufacturing via acoustic emissions and melt-pool imagery fusion.">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<!-- Navigation -->
+<nav>
+    <div class="container">
+        <span class="nav-brand">LayerLogic</span>
+        <ul class="nav-links">
+            <li><a href="#hero">Home</a></li>
+            <li><a href="#problem">Problem</a></li>
+            <li><a href="#pipeline">Pipeline</a></li>
+            <li><a href="#results">Results</a></li>
+            <li><a href="#demo">Demo</a></li>
+            <li><a href="#architecture">Architecture</a></li>
+        </ul>
+    </div>
+</nav>
+
+<!-- Hero -->
+<section id="hero" class="hero section">
+    <div class="container">
+        <h1>LayerLogic</h1>
+        <p class="hero-tagline">
+            Real-time defect detection in metal additive manufacturing
+            via multimodal deep learning
+        </p>
+        <p class="hero-meta">
+            Team SteelSync &middot; IIT Kharagpur Platinum Jubilee Innovation Challenge
+            &middot; Deep Tech for the World
+        </p>
+    </div>
+</section>
+
+<!-- The Problem -->
+<section id="problem" class="section">
+    <div class="container">
+        <h2>The Problem</h2>
+        <p>
+            Laser Powder Bed Fusion (LPBF) is the dominant metal 3D printing process
+            for aerospace, medical, and automotive parts. But micro-defects --
+            porosity, keyhole collapse, lack-of-fusion -- form invisibly during printing
+            and compromise structural integrity.
+        </p>
+        <p>
+            Current quality control relies on post-build CT scanning: expensive,
+            time-consuming, and unable to prevent defective layers from being buried
+            under new material. The industry needs real-time, in-situ detection.
+        </p>
+        <div class="card-grid">
+            <div class="card">
+                <div class="card-label">Defect Rate</div>
+                <div class="card-value">5-15%</div>
+                <p style="margin-top:0.5rem;">of LPBF parts contain internal voids undetectable by visual inspection</p>
+            </div>
+            <div class="card">
+                <div class="card-label">CT Scan Cost</div>
+                <div class="card-value">$500+</div>
+                <p style="margin-top:0.5rem;">per part for non-destructive testing, with 4-24 hour turnaround</p>
+            </div>
+            <div class="card">
+                <div class="card-label">Our Latency</div>
+                <div class="card-value" id="latency-hero">&lt;100ms</div>
+                <p style="margin-top:0.5rem;">per-layer inference on standard hardware with frozen ResNet-18</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Pipeline -->
+<section id="pipeline" class="section">
+    <div class="container">
+        <h2>How It Works</h2>
+        <p>
+            LayerLogic fuses two data streams -- acoustic emissions and melt-pool
+            imagery -- through pretrained CNN feature extractors and classical ML
+            classifiers to output a real-time defect probability score.
+        </p>
+
+        <h3 style="margin-top:2.5rem; margin-bottom:1rem; color: var(--text-muted); font-style: italic;">
+            Acoustic Branch
+        </h3>
+        <div class="pipeline">
+            <span class="pipeline-node">Audio .wav</span>
+            <span class="pipeline-arrow">&rarr;</span>
+            <span class="pipeline-node">Mel-Spectrogram</span>
+            <span class="pipeline-arrow">&rarr;</span>
+            <span class="pipeline-node highlight">ResNet-18 (frozen)</span>
+            <span class="pipeline-arrow">&rarr;</span>
+            <span class="pipeline-node">512-d features</span>
+        </div>
+
+        <h3 style="margin-bottom:1rem; color: var(--text-muted); font-style: italic;">
+            Optical Branch
+        </h3>
+        <div class="pipeline">
+            <span class="pipeline-node">Image .jpg</span>
+            <span class="pipeline-arrow">&rarr;</span>
+            <span class="pipeline-node">Resize / Normalize</span>
+            <span class="pipeline-arrow">&rarr;</span>
+            <span class="pipeline-node highlight">ResNet-18 (frozen)</span>
+            <span class="pipeline-arrow">&rarr;</span>
+            <span class="pipeline-node">512-d features</span>
+        </div>
+
+        <h3 style="margin-bottom:1rem; color: var(--text-muted); font-style: italic;">
+            Fusion + Classification
+        </h3>
+        <div class="pipeline">
+            <span class="pipeline-node">1024-d concat</span>
+            <span class="pipeline-arrow">&rarr;</span>
+            <span class="pipeline-node">PCA (90%)</span>
+            <span class="pipeline-arrow">&rarr;</span>
+            <span class="pipeline-node highlight">XGBoost / RF / DT</span>
+            <span class="pipeline-arrow">&rarr;</span>
+            <span class="pipeline-node">Defect Score</span>
+        </div>
+    </div>
+</section>
+
+<!-- Results -->
+<section id="results" class="section">
+    <div class="container">
+        <h2>Training Results</h2>
+        <p>
+            Evaluated with Stratified 5-Fold Cross-Validation on
+            <span id="dataset-size">500</span> paired samples (images + audio).
+            Scores are reported as mean +/- standard deviation.
+        </p>
+
+        <table class="results-table" id="results-table">
+            <thead>
+                <tr>
+                    <th>Classifier</th>
+                    <th>CV F1</th>
+                    <th>CV AUC</th>
+                    <th>CV Accuracy</th>
+                </tr>
+            </thead>
+            <tbody id="results-tbody">
+                <tr><td colspan="4" style="color: var(--text-muted); font-style: italic;">Loading results...</td></tr>
+            </tbody>
+        </table>
+
+        <h3 style="margin-top:3rem;">Graphs</h3>
+        <div class="graph-grid">
+            <div class="graph-card">
+                <img src="/graphs/classifier_comparison.png" alt="Classifier Comparison" onerror="this.style.display='none'">
+                <div class="graph-title">Classifier Performance (5-Fold CV)</div>
+            </div>
+            <div class="graph-card">
+                <img src="/graphs/confusion_matrix.png" alt="Confusion Matrix" onerror="this.style.display='none'">
+                <div class="graph-title">Confusion Matrix (Best Classifier)</div>
+            </div>
+            <div class="graph-card">
+                <img src="/graphs/roc_curve.png" alt="ROC Curves" onerror="this.style.display='none'">
+                <div class="graph-title">ROC Curves</div>
+            </div>
+            <div class="graph-card">
+                <img src="/graphs/training_history.png" alt="Learning Curves" onerror="this.style.display='none'">
+                <div class="graph-title">Learning Curves (F1 vs Training Size)</div>
+            </div>
+            <div class="graph-card">
+                <img src="/graphs/feature_clustering.png" alt="Feature Clustering (t-SNE)" onerror="this.style.display='none'">
+                <div class="graph-title">Feature Space Clustering (t-SNE)</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Demo -->
+<section id="demo" class="section">
+    <div class="container">
+        <h2>Live Demo</h2>
+        <p>
+            Select a sample from the dataset and run real-time inference.
+            The model processes both audio and image through the full pipeline.
+        </p>
+
+        <div class="demo-controls">
+            <select id="demo-label">
+                <option value="healthy">Healthy samples</option>
+                <option value="defect">Defect samples</option>
+            </select>
+            <select id="demo-index">
+                <option value="0">Sample 0</option>
+                <option value="1">Sample 1</option>
+                <option value="2">Sample 2</option>
+                <option value="3">Sample 3</option>
+                <option value="4">Sample 4</option>
+                <option value="5">Sample 5</option>
+                <option value="6">Sample 6</option>
+                <option value="7">Sample 7</option>
+                <option value="8">Sample 8</option>
+                <option value="9">Sample 9</option>
+            </select>
+            <button class="btn btn-filled" id="btn-predict" onclick="runPrediction()">
+                Run Inference
+            </button>
+            <button class="btn" id="btn-replay" onclick="startReplay()">
+                Auto Replay
+            </button>
+            <button class="btn" id="btn-stop" onclick="stopReplay()" style="display:none;">
+                Stop
+            </button>
+        </div>
+
+        <div class="prediction-result" id="prediction-result">
+            <h3 id="pred-label" style="margin-bottom: 0.5rem;"></h3>
+            <div class="result-bar">
+                <div class="result-bar-fill" id="result-bar-fill" style="width: 0%;"></div>
+            </div>
+            <div class="result-grid">
+                <div class="result-item">
+                    <div class="label">Prediction</div>
+                    <div class="value" id="pred-class">--</div>
+                </div>
+                <div class="result-item">
+                    <div class="label">Defect Probability</div>
+                    <div class="value" id="pred-prob">--</div>
+                </div>
+                <div class="result-item">
+                    <div class="label">Ground Truth</div>
+                    <div class="value" id="pred-gt">--</div>
+                </div>
+                <div class="result-item">
+                    <div class="label">Latency</div>
+                    <div class="value" id="pred-latency">--</div>
+                </div>
+            </div>
+
+            <div class="preview-grid" id="preview-grid">
+                <div class="preview-card">
+                    <img id="preview-mel" src="" alt="Mel Spectrogram">
+                    <div class="caption">Mel-Spectrogram (acoustic input)</div>
+                </div>
+                <div class="preview-card">
+                    <img id="preview-img" src="" alt="Melt Pool Image">
+                    <div class="caption">Melt-Pool Image (optical input)</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Architecture -->
+<section id="architecture" class="section">
+    <div class="container">
+        <h2>Architecture</h2>
+        <div class="arch-box"><span class="highlight-text">Audio .wav</span>  -->  Mel-Spectrogram  -->  <span class="highlight-text">ResNet-18 (frozen)</span>  -->  512-d features --+
+                                                                                        |
+                                                                                        +--> concat --> 1024-d --> PCA (90%) --> <span class="highlight-text">Classifier</span> --> Defect Score
+                                                                                        |
+<span class="highlight-text">Image .jpg</span>  -->  Resize/Norm     -->  <span class="highlight-text">ResNet-18 (frozen)</span>  -->  512-d features --+
+
+Classifiers: XGBoost | Random Forest | Decision Tree
+Backbone: ResNet-18 (ImageNet pretrained, 11.2M params, all frozen)
+Feature Dimension: 512 per branch, 1024 fused
+PCA: 90% variance retained
+Training: Stratified 5-Fold Cross-Validation</div>
+
+        <div class="card-grid">
+            <div class="card">
+                <div class="card-label">Backbone</div>
+                <div class="card-value small">ResNet-18</div>
+                <p style="margin-top:0.5rem;">ImageNet pretrained, 11.2M parameters (all frozen)</p>
+            </div>
+            <div class="card">
+                <div class="card-label">Feature Dimension</div>
+                <div class="card-value small">1024-d</div>
+                <p style="margin-top:0.5rem;">512 per branch (acoustic + optical), concatenated</p>
+            </div>
+            <div class="card">
+                <div class="card-label">Data Source</div>
+                <div class="card-value small">Zenodo</div>
+                <p style="margin-top:0.5rem;">DOI: 10.5281/zenodo.14996805 -- EOS M290, 316L stainless steel</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <p>
+            LayerLogic -- Team SteelSync<br>
+            IIT Kharagpur Platinum Jubilee Innovation Challenge, Stage 2<br>
+            Deep Tech for the World -- AI/ML x Advanced Manufacturing
+        </p>
+    </div>
+</footer>
+
+<script>
+// ── API Base URL ──
+const API = '';  // same origin
+
+// ── Load training results on page load ──
+async function loadResults() {
+    try {
+        const res = await fetch(API + '/model-info');
+        const data = await res.json();
+
+        if (data.training_summary && data.training_summary.all_classifiers) {
+            const classifiers = data.training_summary.all_classifiers;
+            const best = data.training_summary.best_classifier;
+            const tbody = document.getElementById('results-tbody');
+            tbody.innerHTML = '';
+
+            for (const [name, m] of Object.entries(classifiers)) {
+                const isBest = name === best;
+                const f1 = m.cv_f1_mean !== undefined
+                    ? `${m.cv_f1_mean.toFixed(4)} +/- ${m.cv_f1_std.toFixed(4)}`
+                    : m.f1.toFixed(4);
+                const auc = m.cv_auc_mean !== undefined
+                    ? `${m.cv_auc_mean.toFixed(4)} +/- ${m.cv_auc_std.toFixed(4)}`
+                    : m.auc.toFixed(4);
+                const acc = m.cv_acc_mean !== undefined
+                    ? `${m.cv_acc_mean.toFixed(4)} +/- ${m.cv_acc_std.toFixed(4)}`
+                    : m.accuracy.toFixed(4);
+
+                const row = document.createElement('tr');
+                if (isBest) row.className = 'best-row';
+                row.innerHTML = `
+                    <td>${name}${isBest ? ' (best)' : ''}</td>
+                    <td>${f1}</td>
+                    <td>${auc}</td>
+                    <td>${acc}</td>
+                `;
+                tbody.appendChild(row);
+            }
+        }
+    } catch (e) {
+        console.log('Could not load results:', e);
+    }
+}
+
+// ── Run single prediction ──
+async function runPrediction() {
+    const label = document.getElementById('demo-label').value;
+    const index = parseInt(document.getElementById('demo-index').value);
+    const btn = document.getElementById('btn-predict');
+
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span>Running...';
+
+    try {
+        const res = await fetch(API + `/predict-sample?label=${label}&index=${index}`, {
+            method: 'POST'
+        });
+        const data = await res.json();
+        showResult(data);
+    } catch (e) {
+        alert('Inference failed. Is the model loaded?');
+    }
+
+    btn.disabled = false;
+    btn.innerHTML = 'Run Inference';
+}
+
+// ── Display prediction result ──
+function showResult(data) {
+    const panel = document.getElementById('prediction-result');
+    panel.classList.add('visible');
+
+    document.getElementById('pred-class').textContent = data.prediction;
+    document.getElementById('pred-prob').textContent = (data.defect_probability * 100).toFixed(1) + '%';
+    document.getElementById('pred-gt').textContent = data.ground_truth;
+    document.getElementById('pred-latency').textContent = data.latency_ms.toFixed(0) + 'ms';
+
+    const bar = document.getElementById('result-bar-fill');
+    bar.style.width = (data.defect_probability * 100) + '%';
+
+    // Color the prediction
+    const predEl = document.getElementById('pred-class');
+    predEl.style.color = data.prediction === 'Defect' ? '#ff6b6b' : 'var(--cyan)';
+
+    const barEl = document.getElementById('result-bar-fill');
+    barEl.style.background = data.prediction === 'Defect'
+        ? 'linear-gradient(90deg, var(--cyan), #ff6b6b)'
+        : 'var(--cyan)';
+
+    // Show images
+    if (data.mel_spectrogram_base64) {
+        document.getElementById('preview-mel').src = 'data:image/png;base64,' + data.mel_spectrogram_base64;
+    }
+    if (data.image_base64) {
+        document.getElementById('preview-img').src = 'data:image/jpeg;base64,' + data.image_base64;
+    }
+
+    // Label
+    const label = document.getElementById('pred-label');
+    const correct = data.prediction.toLowerCase() === data.ground_truth;
+    label.textContent = correct ? 'Correct prediction' : 'Misclassification';
+    label.style.color = correct ? 'var(--cyan)' : '#ff6b6b';
+}
+
+// ── Auto replay ──
+let replayInterval = null;
+let replayIdx = 0;
+
+function startReplay() {
+    document.getElementById('btn-replay').style.display = 'none';
+    document.getElementById('btn-stop').style.display = 'inline-block';
+    document.getElementById('btn-predict').disabled = true;
+
+    replayIdx = 0;
+    const labels = ['healthy', 'defect'];
+
+    replayInterval = setInterval(async () => {
+        const label = labels[replayIdx % 2 === 0 ? 0 : 1];
+        const index = Math.floor(replayIdx / 2) % 10;
+
+        document.getElementById('demo-label').value = label;
+        document.getElementById('demo-index').value = index;
+
+        try {
+            const res = await fetch(API + `/predict-sample?label=${label}&index=${index}`, {
+                method: 'POST'
+            });
+            const data = await res.json();
+            showResult(data);
+        } catch (e) {
+            stopReplay();
+        }
+
+        replayIdx++;
+        if (replayIdx >= 20) stopReplay();
+    }, 2500);
+}
+
+function stopReplay() {
+    clearInterval(replayInterval);
+    replayInterval = null;
+    document.getElementById('btn-replay').style.display = 'inline-block';
+    document.getElementById('btn-stop').style.display = 'none';
+    document.getElementById('btn-predict').disabled = false;
+}
+
+// ── Init ──
+document.addEventListener('DOMContentLoaded', loadResults);
+</script>
+
+</body>
+</html>

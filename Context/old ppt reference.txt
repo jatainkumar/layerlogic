@@ -1,0 +1,309 @@
+
+## Caution. This is a. Powerpoint presentation of different project. This is just for reference. This was a research work. But the current project I am working is using open source data and other models also. ##
+Subir Chowdhury School of Quality and Reliability
+Indian Institute of Technology Kharagpur
+In-situ Process Monitoring
+for Metal Printed Spur Gears
+Surface & Porosity Classification using
+Deep Learning and Multimodal Sensing
+By Jatain Kumar & Amogh Ubhalkar
+Supervisor: Prof. Rajiv Nandan Rai
+Guide: Mr. Vikram Gupta
+IN718 Inconel Spur Gear – L-PBF Printed
+Bachelor of Technology – Mechanical Engineering | IIT Kharagpur | Spring 2025-26
+02 15
+Introduction to Additive Manufacturing & LPBF
+Why AM?
+No material waste — only adds material
+where needed
+Complex geometries — internal channels,
+lattice structures, impossible shapes
+Low-volume, high-value — ideal for
+aerospace, medical, and defense parts
+LPBF Highlights
+Near-full density — often exceeds 99.9%
+relative density
+Compatible materials — Inconel 718,
+Titanium, Aluminum alloys
+Precision — layer thickness as thin as
+20–50 micrometers
+In-situ Process Monitoring for L-PBF IN718 Spur Gear | IIT Kharagpur
+ 
+  Defect Types
+Common Defects in Metal 3D Printing
+Unstable laser energy creates three major quality problems during printing
+Lack of Fusion
+Keyhole Porosity
+Surface Roughness
+⚡ Too Little Energy ⚡ Too Much Energy 🌊 Unstable Melt Pool
+The laser doesn't melt the powder
+completely. This leaves gaps and holes
+between layers, making the part weak
+and porous.
+LOW
+The laser goes too deep and creates a
+vapor pocket. When it collapses, it traps
+gas bubbles inside the metal, forming
+tiny spherical holes.
+HIGH
+The surface freezes unevenly, leaving
+bumps and ridges. This reduces fatigue
+life and creates stress concentration
+points on the finished part.
+UNSTABLE
+03 / 15
+All three defects are controlled by one thing: laser energy density — too low, too high, or unstable all cause problems.
+IIT Kharagpur
+Challenges in Process Monitoring
+Too Slow, Too Late
+• Traditional inspection happens after printing is done
+• Expensive tools like micro-CT scanners and electron
+microscopes are needed
+• If a defect is found, the entire part is already wasted
+• No way to fix problems while printing
+⚠ Post-process inspection = zero chance to prevent defects
+The solution must detect the physics of the process in real-time — not just check parameters
+04 / 15
+Heat Behaves Differently Everywhere
+• A gear has thin teeth and a thick central hub
+• Thin sections heat up and cool down very fast
+• Thick sections hold heat much longer
+• The same laser settings behave differently in each zone
+• This causes unexpected defects even with 'correct'
+parameters
+💡 One-size-fits-all monitoring fails on real-world complex parts
+In-situ Process Monitoring for Metal Printed Spur Gears | IIT Kharagpur | 2026
+Research Objective
+What Are We Trying to Achieve?
+The core goal of this research — in plain terms
+“Build a smart system that listens and watches
+during 3D metal printing — and tells us, in real time,
+whether the part being made is good or defective.ˮ
+Using acoustic sensors + optical cameras + machine learning to classify
+Surface Roughness and Porosity — layer by layer.
+Listen
+Capture acoustic emissions from the
+laser-material interaction in real time
+Watch
+Capture optical images of each
+printed gear layer as it is built
+Classify
+Use deep learning and ML to predict
+surface roughness and porosity class
+05 15
+Main Research Objective.
+06
+Experimental Setup and Materials
+Inconel 718 spur gear printed via L-PBF — monitored by acoustic and optical sensors in real time
+Material
+Inconel 718
+• Nickel-based superalloy
+• Gas-atomized powder
+• Used in aerospace &
+high-performance parts
+• Excellent heat and
+corrosion resistance
+Why IN718? → High strength
+at extreme temperatures
+Key Print Settings
+Header Value
+Laser Power
+500 W
+Scan Speed
+800 mm/s
+Hatch Spacing
+110 µm
+Layer Thickness
+50 µm
+Scan Rotation
+67° per layer
+All parameters optimized for IN718
+dense part fabrication
+In-Situ Sensor Setup
+Acoustic Emissions
+Optical Imaging
+In-situ Process Monitoring | IIT Kharagpur | Spring 2025-26
+07 / 15
+Multimodal Monitoring Framework
+Two sensors. One picture. Complete build quality — layer by layer.
+*Detailed pipeline architecture – EfficientNetB0 & ResNet-50 pathways
+08 / 15
+Feature Extraction using Deep Learning
+Letting the AI find the patterns — no manual engineering needed
+Optical Pathway (Images)
+Gear layer photos are fed into EfficientNetB0 or
+ResNet-50
+The network extracts a compact feature vector
+capturing texture, edges, and surface patterns
+Spatial Domain — What does the surface look like?
+Acoustic Pathway (Sound)
+Raw audio from the laser process is converted into
+spectrogram images
+The same deep networks read these images and
+extract acoustic feature vectors
+Time-Frequency Domain — What does the process sound like?
+⚡ Combined Feature Vector → Ready for Classification
+Both pathways are merged
+IIT Kharagpur
+Machine Learning Classification Models
+Four models compete to predict surface roughness and porosity — layer by layer
+Input to All Models
+Fused feature vector from optical +
+acoustic data
+Dimensionality reduced using PCA
+(keeps 95%+ variance)
+Labels: Roughness (High / Medium /
+Low) and Porosity (LoF / Keyhole / Gas)
+SVM
+Support Vector Machine
+Draws the best boundary line
+between quality classes in
+complex feature space
+XGBoost
+Extreme Gradient Boosting
+Builds trees one after
+another, each fixing the
+mistakes of the last
+Best Result: SVM + EfficientNetBO → 0.90 F1-Score for Roughness · 0.85 F1-Score for Porosity
+09 / 15
+Random Forest
+Ensemble of Decision Trees
+Combines many decision
+trees to give a stable,
+reliable vote on quality
+Decision Tree
+Baseline Model
+A simple flowchart of yes/no
+decisions — easy to
+understand and interpret
+Bachelor of Technology — Mechanical Engineering | IIT Kharagpur | Spring 2025-26
+10 / 15
+Results for Surface Roughness Classification
+3-Class Prediction: High • Medium • Low
+OVERALL F1-SCORE
+Classifiers
+SVM
+Models
+EfficientNetB0
+0.90
+Random Forest
+Logistic Regression
+ResNet-50
+0.85
+0.84
+0.77
+0.71
+0.66
+Decision Tree
+0.65
+0.60
+🏆 Best Result. SVM + EfficientNetB0 achieves 0.90
+F1-Score – the highest across all tested
+combinations.
+⚡ EfficientNetB0 outperforms ResNet-50 across
+every single classifier tested.
+VISUAL COMPARISON
+Bachelor of Technology – Mechanical Engineering | IIT Kharagpur | Spring 2025-26
+RESULTS — POROSITY
+Results for Porosity Detection Performance
+Three porosity types classified using multimodal deep learning features
+0.85
+Classifier
+Best F1-Score
+SVM + EfficientNetB0 pipeline
+EfficientNetB0 F1
+ResNet-50 F1
+SVM 0.85 0.83
+Random Forest
+0.79
+0.73
+Logistic Regression
+0.67
+0.62
+Decision Tree
+0.61
+0.55
+All scores are overall F1-scores (3-class: LoF, Keyhole, Gas Porosity)
+11 / 15
+Class 1 — Lack of Fusion
+Class 2 — Keyhole
+Class 3 — Gas Porosity
+Porosity cross-section micrographs → classified
+into 3 distinct defect types
+In-situ Process Monitoring | IIT Kharagpur
+12 / 15
+Performance Analysis & ROC Curves
+EfficientNetB0 consistently outperforms ResNet-50 across all classifiers
+Surface Roughness – ROC Comparison
+Key AUC Scores
+SVM – Best Performer
+Random Forest
+Logistic Regression
+Decision Tree – Baseline
+Roughness AUC: 0.92 (EfficientNetB0)
+Porosity AUC: 0.88 (EfficientNetB0)
+Consistent second-place finish
+across both tasks
+Moderate performance, useful as
+a baseline
+Lowest AUC, but provides
+interpretability
+💡 EfficientNetB0 leads ResNet-50 by 0.05-0.10 AUC points
+on average across all classifiers and both quality tasks. Its
+compound scaling captures finer surface textures and
+acoustic patterns.
+Bachelor of Technology – Mechanical Engineering | IIT Kharagpur | Spring 2025-26
+Conclusion and Summary
+WHAT WE ACHIEVED
+High Classification F1-Score Two Sensors, One Smart System
+Surface Roughness classified at 90% accuracy and
+Porosity at F1-Score of 0.85 — both using the
+EfficientNetB0 + SVM pipeline.
+Impact of Deep Learning Real-World Use Case
+EfficientNetB0 automatically extracted meaningful
+features from gear images and acoustic spectrograms
+— no manual feature engineering needed.
+14 / 15
+Optical images and acoustic signals were fused
+together, giving the system complementary
+information that neither sensor could provide alone.
+The system is non-invasive, cost-effective, and
+does not require any changes to the LPBF machine —
+making it practical for industrial deployment.
+“A non-invasive, accurate, and scalable foundation for zero-defect metal additive manufacturing.”
+Bachelor of Technology — Mechanical Engineering | IIT Kharagpur | Spring 2025-26
+Future Scope & Closed-Loop Control
+From passive monitoring to autonomous, zero-defect manufacturing
+Fine-Tune the AI
+Train the deep learning models
+directly on LPBF data — not
+just general images — to push
+accuracy beyond 90%.
+Sensors Capture
+Audio + Images
+Learn Over Time
+Use memory-based networks
+(LSTM) to track how quality
+changes layer by layer and
+predict problems before they
+happen.
+AI Classifies
+Defect Type
+Test More Materials
+Apply the same framework to
+titanium, steel, and aluminum
+alloys — and to complex shapes
+like thin walls and
+lattice structures.
+Controller Adjusts
+Laser Settings
+Real-time adaptive control — the ultimate goal of this research
+Close the Loop
+Feed real-time defect alerts
+back to the laser controller to
+automatically fix defects as they
+form — no human needed.
+Better Layer
+Quality
+15 / 15
+IIT Kharagpur | B.Tech Thesis 2025-26 | Jatain Kumar & Amogh Ubhalkar
